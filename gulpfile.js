@@ -15,7 +15,7 @@ var browserSync = require('browser-sync'),
     concat = require('gulp-concat'),
     rename = require('gulp-rename'),
     del = require('del'),
-    cache = require('gulp-cache');
+    cache = require('gulp-cache'),
     ssi = require('browsersync-ssi'),
     bssi = require('gulp-ssi');
 
@@ -166,7 +166,7 @@ gulp.task('watch', function() {
 
 // unification
 gulp.task('css-libs', gulp.series('sass', 'minifycss'));
-gulp.task('build', gulp.series('css-libs', 'minifyjs', 'clean', 'compress', (gulp.parallel([
+gulp.task('build', gulp.series('css-libs', 'include', 'minifyjs', 'clean', 'compress', (gulp.parallel([
     'sass', 'prebuild'
 ]))));
 gulp.task('default', gulp.parallel('watch', 'browser-sync', 'css-libs', 'minifyjs'));
