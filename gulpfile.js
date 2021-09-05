@@ -19,8 +19,8 @@ function browsersync() {
     browserSync.init({
         // You can use the 'proxy' property to update the site on the server
         server: {
-            baseDir: 'app/',
-            middleware: ssi({ baseDir: 'app/', ext: '.html' })
+            baseDir: 'src/',
+            middleware: ssi({ baseDir: 'src/', ext: '.html' })
         },
         notify: false,
         online: true,
@@ -39,33 +39,33 @@ function scripts() {
     return src([
         // module paths
         'node_modules/jquery/dist/jquery.min.js',
-        'app/js/common.js'
+        'src/js/common.js'
     ])
         .pipe(concat('scripts.min.js'))
         .pipe(uglify())
-        .pipe(dest('app/js/'))
+        .pipe(dest('src/js/'))
         .pipe(browserSync.stream())
 }
 
 // images minification
 function images() {
-    return src('app/img/src/**/*')
-        .pipe(newer('app/img/dist/'))
+    return src('src/img/src/**/*')
+        .pipe(newer('src/img/dist/'))
         .pipe(imagemin())
-        .pipe(dest('app/img/dist/'))
+        .pipe(dest('src/img/dist/'))
 }
 
 
 // css styles minification
 function styles() {
     return src([
-        'app/sass/styles.sass'
+        'src/sass/styles.sass'
     ])
         .pipe(sass())
         .pipe(concat('styles.min.css'))
         .pipe(autoprefixer({ overrideBrowserslist: ['Last 10 versions'], grid: true }))
-        .pipe(cleancss(({ level: { 1: { specialComments: 0 } } })))
-        .pipe(dest('app/css/'))
+        .pipe(cleancss({level:2}))
+        .pipe(dest('src/css/'))
         .pipe(browserSync.stream())
 }
 
@@ -77,23 +77,23 @@ function cleandist() {
 // build project
 function buildcopy() {
     return src([
-        'app/css/**/*.min.css', 'app/js/**/*.min.js', 'app/img/dist/**/*', 'app/**/*.html', 'app/fonts/**/*'
+        'src/css/**/*.min.css', 'src/js/**/*.min.js', 'src/img/dist/**/*', 'src/**/*.html', 'src/fonts/**/*'
     ], { base: 'app' })
         .pipe(dest('dist'))
 }
 
 function buildhtml() {
-    return src(['app/**/*.html', '!app/parts/**/*'])
-        .pipe(bssi({ root: 'app/' }))
+    return src(['src/**/*.html', '!src/parts/**/*'])
+        .pipe(bssi({ root: 'src/' }))
         .pipe(dest('dist'))
 }
 
 // watch file changes
 function startwatch() {
-    watch('app/**/*.sass', styles)
-    watch('app/img/src/**/*', images)
-    watch(['app/**/*.js', '!app/**/*.min.js'], scripts)
-    watch('app/**/*.html').on('change', browserSync.reload)
+    watch('src/**/*.sass', styles)
+    watch('src/img/src/**/*', images)
+    watch(['src/**/*.js', '!src/**/*.min.js'], scripts)
+    watch('src/**/*.html').on('change', browserSync.reload)
 }
 
 // combinations of functions
