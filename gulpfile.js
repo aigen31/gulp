@@ -78,7 +78,7 @@ function cleandist() {
 function buildcopy() {
     return src([
         'src/css/**/*.min.css', 'src/js/**/*.min.js', 'src/img/dist/**/*', 'src/**/*.html', 'src/fonts/**/*'
-    ], { base: 'app' })
+    ], { base: 'src' })
         .pipe(dest('dist'))
 }
 
