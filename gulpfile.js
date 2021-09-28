@@ -10,6 +10,7 @@ const browserSync = require('browser-sync').create(),
     autoprefixer = require('gulp-autoprefixer'),
     cleancss = require('gulp-clean-css'),
     imagemin = require('gulp-imagemin'),
+    fonter = require('gulp-fonter'),
     newer = require('gulp-newer'),
     del = require('del'),
     ssi = require('browsersync-ssi'),
@@ -69,6 +70,17 @@ function styles() {
         .pipe(browserSync.stream())
 }
 
+//fonts generator
+function fonts() {
+    return src('src/fonts/src/**/*')
+        .pipe(fonter({
+            subset: [66, 67, 68, 69, 70, 71],
+            formats: ['woff', 'ttf', 'eot']
+        }))
+        .pipe(dest('src/fonts/dist/'))
+        .pipe(browserSync.stream())
+}
+
 // deleting the dist folder
 function cleandist() {
     return del('dist', { force: true })
@@ -91,7 +103,8 @@ function buildhtml() {
 // watch file changes
 function startwatch() {
     watch('src/**/*.sass', styles)
-    watch('src/img/src/**/*', images)
+    watch('src/img/src/**/*', images),
+    watch('src/fonts/src/**/*', fonts),
     watch(['src/**/*.js', '!src/**/*.min.js'], scripts)
     watch('src/**/*.html').on('change', browserSync.reload)
 }
@@ -101,6 +114,7 @@ exports.browsersync = browsersync;
 exports.scripts = scripts;
 exports.styles = styles;
 exports.images = images;
-exports.build = series(cleandist, styles, scripts, images, buildcopy, buildhtml)
+exports.fonts = fonts;
+exports.build = series(cleandist, styles, scripts, images, fonts, buildcopy, buildhtml)
 
-exports.default = parallel(scripts, styles, images, browsersync, startwatch);
+exports.default = parallel(scripts, styles, images, fonts, browsersync, startwatch);
