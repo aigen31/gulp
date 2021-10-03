@@ -27,6 +27,12 @@ function browsersync() {
         online: true,
         // // Open Internet access (port 3000 must be open)
         // tunnel: true
+        ghostMode: {
+            clicks: false,
+            forms: false,
+            scroll: false,
+            location: false
+        }
     })
 }
 
