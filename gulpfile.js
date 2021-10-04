@@ -100,6 +100,11 @@ function buildcopy() {
         .pipe(dest('dist'))
 }
 
+function deploy() {
+    return src('dist/**/*')
+        .pipe(dest('D:/aigen/Documents/github/aigen31.github.io/project_name'))
+}
+
 function buildhtml() {
     return src(['src/**/*.html', '!src/parts/**/*'])
         .pipe(bssi({ root: 'src/' }))
@@ -121,6 +126,7 @@ exports.scripts = scripts;
 exports.styles = styles;
 exports.images = images;
 exports.fonts = fonts;
+exports.deploy = deploy;
 exports.build = series(cleandist, styles, scripts, images, fonts, buildcopy, buildhtml)
 
 exports.default = parallel(scripts, styles, images, fonts, browsersync, startwatch);
