@@ -1,23 +1,24 @@
-const { src, dest, parallel, series, watch } = require('gulp');
+import pkg from 'gulp';
+const { src, dest, parallel, series, watch } = pkg;
 
-/**
-  * Connected modules
-  */
-const browserSync = require('browser-sync').create(),
-    concat = require('gulp-concat'),
-    uglify = require('gulp-uglify-es').default,
-    sass = require('gulp-sass')(require('sass')),
-    autoprefixer = require('gulp-autoprefixer'),
-    cleancss = require('gulp-clean-css'),
-    imagemin = require('gulp-imagemin'),
-    fonter = require('gulp-fonter'),
-    newer = require('gulp-newer'),
-    del = require('del'),
-    ssi = require('browsersync-ssi'),
-    bssi = require('gulp-ssi');
+import { init, stream, reload } from 'browser-sync'
+import concat from 'gulp-concat'
+import dartSass from 'sass'
+import gulpSass from 'gulp-sass'
+const sass = gulpSass(dartSass)
+import autoprefixer from 'gulp-autoprefixer'
+import imagemin from 'gulp-imagemin'
+import fonter from 'gulp-fonter'
+import newer from 'gulp-newer'
+import del from 'del'
+import ssi from 'browsersync-ssi'
+import bssi from 'gulp-ssi'
+import webpack from 'webpack'
+import webpackStream from 'webpack-stream'
+import TerserPlugin from 'terser-webpack-plugin'
 
 function browsersync() {
-    browserSync.init({
+    init({
         // You can use the 'proxy' property to update the site on the server
         server: {
             baseDir: 'src/',
@@ -25,7 +26,6 @@ function browsersync() {
         },
         notify: false,
         online: true,
-        // // Open Internet access (port 3000 must be open)
         // tunnel: true
         ghostMode: {
             clicks: false,
@@ -36,25 +36,45 @@ function browsersync() {
     })
 }
 
-
-/**
-  * tasks that are performed to build
-  */
-
-// script minification
 function scripts() {
-    return src([
-        // module paths
-        'node_modules/jquery/dist/jquery.min.js',
-        'src/js/common.js'
-    ])
+    return src(['src/js/common.js', '!src/js/*.min.js'])
+        .pipe(webpackStream({
+            mode: 'production',
+            performance: { hints: false },
+            plugins: [
+                new webpack.ProvidePlugin({ $: 'jquery', jQuery: 'jquery', 'window.jQuery': 'jquery' })
+            ],
+            module: {
+                rules: [
+                    {
+                        test: /\.m?js$/,
+                        exclude: /(node_modules)/,
+                        use: {
+                            loader: 'babel-loader',
+                            options: {
+                                presets: ['@babel/preset-env']
+                            }
+                        }
+                    }
+                ]
+            },
+            optimization: {
+                minimize: true,
+                minimizer: [
+                    new TerserPlugin({
+                        terserOptions: { format: { comments: false } },
+                        extractComments: false
+                    })
+                ]
+            },
+        }, webpack)).on('error', function handleError() {
+            this.emit('end')
+        })
         .pipe(concat('scripts.min.js'))
-        .pipe(uglify())
         .pipe(dest('src/js/'))
-        .pipe(browserSync.stream())
+        .pipe(stream())
 }
 
-// images minification
 function images() {
     return src('src/img/src/**/*')
         .pipe(newer('src/img/dist/'))
@@ -62,21 +82,17 @@ function images() {
         .pipe(dest('src/img/dist/'))
 }
 
-
-// css styles minification
 function styles() {
     return src([
-        'src/sass/styles.sass'
+        'src/sass/styles.scss'
     ])
-        .pipe(sass())
+        .pipe(sass.sync({ outputStyle: 'compressed' }))
         .pipe(concat('styles.min.css'))
-        .pipe(autoprefixer({ overrideBrowserslist: ['Last 10 versions'], grid: true }))
-        .pipe(cleancss({level:2}))
+        .pipe(autoprefixer())
         .pipe(dest('src/css/'))
-        .pipe(browserSync.stream())
+        .pipe(stream())
 }
 
-//fonts generator
 function fonts() {
     return src('src/fonts/src/**/*')
         .pipe(fonter({
@@ -84,15 +100,13 @@ function fonts() {
             formats: ['woff', 'ttf', 'eot']
         }))
         .pipe(dest('src/fonts/dist/'))
-        .pipe(browserSync.stream())
+        .pipe(stream())
 }
 
-// deleting the dist folder
 function cleandist() {
     return del('dist', { force: true })
 }
 
-// build project
 function buildcopy() {
     return src([
         'src/css/**/*.min.css', 'src/js/**/*.min.js', 'src/img/dist/**/*', 'src/**/*.html', 'src/fonts/**/*'
@@ -102,31 +116,25 @@ function buildcopy() {
 
 function deploy() {
     return src('dist/**/*')
-        .pipe(dest('D:/aigen/Documents/github/aigen31.github.io/project_name'))
+        .pipe(dest('../../builds/aigen31.github.io/project_name'))
 }
 
 function buildhtml() {
-    return src(['src/**/*.html', '!src/parts/**/*'])
+    return src(['src/**/*.html'])
         .pipe(bssi({ root: 'src/' }))
         .pipe(dest('dist'))
 }
 
-// watch file changes
 function startwatch() {
-    watch('src/**/*.sass', styles)
+    watch('src/sass/**/*.scss', styles)
     watch('src/img/src/**/*', images),
     watch('src/fonts/src/**/*', fonts),
-    watch(['src/**/*.js', '!src/**/*.min.js'], scripts)
-    watch('src/**/*.html').on('change', browserSync.reload)
+    watch(['src/js/common.js', '!src/**/*.min.js'], scripts)
+    watch('src/**/*.html').on('change', reload)
 }
 
-// combinations of functions
-exports.browsersync = browsersync;
-exports.scripts = scripts;
-exports.styles = styles;
-exports.images = images;
-exports.fonts = fonts;
-exports.deploy = deploy;
-exports.build = series(cleandist, styles, scripts, images, fonts, buildcopy, buildhtml)
+export { scripts, styles, images, fonts, deploy }
 
-exports.default = parallel(scripts, styles, images, fonts, browsersync, startwatch);
+export const build = series(cleandist, styles, scripts, images, fonts, buildcopy, buildhtml, deploy)
+
+export default parallel(scripts, styles, images, fonts, browsersync, startwatch)

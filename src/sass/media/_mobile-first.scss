@@ -1,0 +1,39 @@
+@mixin dekstopChanges($sf) {
+    //
+}
+
+@media screen and (min-width: 361px) {
+    //    
+}
+
+@media screen and (min-width: 421px) {
+    //    
+}
+
+@media screen and (min-width: 577px) {
+    //    
+}
+
+@media screen and (min-width: 769px) {
+    //    
+}
+
+@media screen and (min-width: 993px) {
+    @include dekstopChanges(.51)
+}
+
+@media screen and (min-width: 1201px) {
+    @include dekstopChanges(.62)
+}
+
+@media screen and (min-width: 1401px) {
+    @include dekstopChanges(.72)
+}
+
+@media screen and (min-width: 1537px) {
+    @include dekstopChanges(.8) 
+}
+
+@media screen and (min-width: 1601px) {
+    @include dekstopChanges(1)
+}

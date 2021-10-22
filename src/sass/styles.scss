@@ -1,0 +1,11 @@
+//**     styles import     **//
+@import 'fonts';
+@import 'config';
+@import 'libs';
+@import 'keyframes';
+@import 'mixins/main';
+
+@include main(1);
+
+@import 'media/desktop-first';
+@import 'media/mobile-first';
