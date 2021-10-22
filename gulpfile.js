@@ -8,14 +8,14 @@ import gulpSass from 'gulp-sass'
 const sass = gulpSass(dartSass)
 import autoprefixer from 'gulp-autoprefixer'
 import imagemin from 'gulp-imagemin'
+import imageminSvgo from 'imagemin-svgo'
 import fonter from 'gulp-fonter'
-import newer from 'gulp-newer'
+import changed from 'gulp-changed'
 import del from 'del'
 import ssi from 'browsersync-ssi'
 import bssi from 'gulp-ssi'
 import webpack from 'webpack'
 import webpackStream from 'webpack-stream'
-import TerserPlugin from 'terser-webpack-plugin'
 
 function browsersync() {
     init({
@@ -47,7 +47,6 @@ function scripts() {
             module: {
                 rules: [
                     {
-                        test: /\.m?js$/,
                         exclude: /(node_modules)/,
                         use: {
                             loader: 'babel-loader',
@@ -57,16 +56,7 @@ function scripts() {
                         }
                     }
                 ]
-            },
-            optimization: {
-                minimize: true,
-                minimizer: [
-                    new TerserPlugin({
-                        terserOptions: { format: { comments: false } },
-                        extractComments: false
-                    })
-                ]
-            },
+            }
         }, webpack)).on('error', function handleError() {
             this.emit('end')
         })
@@ -77,8 +67,17 @@ function scripts() {
 
 function images() {
     return src('src/img/src/**/*')
-        .pipe(newer('src/img/dist/'))
-        .pipe(imagemin())
+        .pipe(changed('src/img/dist/'))
+        .pipe(imagemin({
+            plugins: [
+                imageminSvgo({
+                    plugins: [{
+                        name: 'removeViewBox',
+                        active: false
+                    }]
+                })
+            ]
+        }))
         .pipe(dest('src/img/dist/'))
 }
 
