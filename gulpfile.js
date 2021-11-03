@@ -1,6 +1,8 @@
 import pkg from 'gulp';
 const { src, dest, parallel, series, watch } = pkg;
 
+let projectName = 'project_name'
+
 import { init, stream, reload } from 'browser-sync'
 import concat from 'gulp-concat'
 import dartSass from 'sass'
@@ -8,7 +10,6 @@ import gulpSass from 'gulp-sass'
 const sass = gulpSass(dartSass)
 import autoprefixer from 'gulp-autoprefixer'
 import imagemin from 'gulp-imagemin'
-import imageminSvgo from 'imagemin-svgo'
 import fonter from 'gulp-fonter'
 import changed from 'gulp-changed'
 import del from 'del'
@@ -68,16 +69,7 @@ function scripts() {
 function images() {
     return src('src/img/src/**/*')
         .pipe(changed('src/img/dist/'))
-        .pipe(imagemin({
-            plugins: [
-                imageminSvgo({
-                    plugins: [{
-                        name: 'removeViewBox',
-                        active: false
-                    }]
-                })
-            ]
-        }))
+        .pipe(imagemin())
         .pipe(dest('src/img/dist/'))
 }
 
@@ -115,7 +107,7 @@ function buildcopy() {
 
 function deploy() {
     return src('dist/**/*')
-        .pipe(dest('../../builds/aigen31.github.io/project_name'))
+        .pipe(dest('../../builds/aigen31.github.io/' + projectName))
 }
 
 function buildhtml() {
