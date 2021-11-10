@@ -1,11 +1,33 @@
-//**     styles import     **//
 @import 'fonts';
 @import 'config';
 @import 'libs';
 @import 'keyframes';
-@import 'mixins/main';
 
-@include main(1);
+html {
+  font-size: 16px;
+}
+body {
+  font-size: rem(16px);
+  overflow-x: hidden;
+  opacity: 1;
+  font-family: $default-font, Arial, Helvetica, sans-serif;
+  line-height: 1.75;
+  &.hidden {
+    overflow: hidden;
+  }
+}
 
-@import 'media/desktop-first';
-@import 'media/mobile-first';
+.h1, .h2, .h3, .h4, .h5 {
+  line-height: 1.4;
+}
+
+.para {
+  font-size: rem(18px);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+@import 'media';

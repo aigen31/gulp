@@ -20,10 +20,11 @@
     "gulp-changed": "^4.0.3",
     "gulp-concat": "^2.6.1",
     "gulp-fonter": "^0.3.0",
+    "gulp-imagemin": "^8.0.0",
     "gulp-sass": "^5.0.0",
-    "gulp-ssi": "^0.1.5",
     "imagemin-svgo": "^10.0.0",
     "sass": "^1.43.3",
+    "ssi": "^0.3.0",
     "webpack": "^5.59.1",
     "webpack-stream": "^7.0.0"
   },
