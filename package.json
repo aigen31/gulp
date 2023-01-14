@@ -1,0 +1,48 @@
+{
+  "name": "gulp",
+  "version": "1.0.0",
+  "main": "gulpfile.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "AiGen31",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.20.12",
+    "@babel/preset-env": "^7.20.2",
+    "babel-loader": "^9.1.2",
+    "browser-sync": "^2.27.11",
+    "browsersync-ssi": "^0.2.4",
+    "del": "^6.1.1",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^8.0.0",
+    "gulp-changed": "^4.0.3",
+    "gulp-concat": "^2.6.1",
+    "gulp-fonter": "^0.3.0",
+    "gulp-imagemin": "^8.0.0",
+    "gulp-sass": "^5.1.0",
+    "imagemin-mozjpeg": "^10.0.0",
+    "imagemin-optipng": "^8.0.0",
+    "imagemin-svgo": "^10.0.1",
+    "sass": "^1.57.1",
+    "ssi": "^0.3.0",
+    "webpack": "^5.75.0",
+    "webpack-stream": "^7.0.0"
+  },
+  "description": "This tool has everything you need for Frontend development.",
+  "dependencies": {
+    "@glidejs/glide": "^3.6.0",
+    "bootstrap": "^5.2.3",
+    "hamburgers": "^1.2.1",
+    "jquery": "^3.6.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aigen31/gulp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aigen31/gulp/issues"
+  },
+  "homepage": "https://github.com/aigen31/gulp#readme"
+}

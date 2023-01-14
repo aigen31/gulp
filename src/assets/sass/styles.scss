@@ -1,0 +1,59 @@
+@import 'fonts';
+@import 'config';
+@import 'libs';
+@import 'keyframes';
+
+:root {
+  --text: #131313;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  font-family: $default-font, Arial, Helvetica, sans-serif;
+  line-height: 1.35;
+
+  &.hidden {
+    overflow: hidden;
+  }
+}
+
+.header-main {
+  padding: 2rem 0;
+}
+
+.header-main__h1 {
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.header-main__h2 {
+  text-align: center;
+}
+
+
+.section-main__img {
+  display: block;
+  margin: auto;
+}
+
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.footer-main {
+  padding: 2rem 0;
+}
+
+.footer-main__text {
+  font-size: 2rem;
+  text-align: center;
+}
+
+@import 'media';
